@@ -1,0 +1,138 @@
+= CloudBees action: Configure EKS credentials
+
+Use this action to configure Amazon Elastic Kubernetes Service (EKS) credentials for use in CloudBees workflows.
+This action updates your `\~/.kube/config` with credentials for connecting to an EKS cluster.
+
+== Prerequisites
+
+Make sure to add the following to your YAML file:
+
+[source,yaml]
+----
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: cloudbees-io/configure-aws-credentials@v0
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
+          aws-region: aws-region-1
+----
+
+For more information, refer to xref:configure-aws-credentials.adoc[].
+
+
+== Inputs
+
+[cols="2a,1a,1a,3a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required?
+| Description
+
+| `name`
+| String
+| Yes
+| The EKS cluster name.
+
+| `role-to-assume`
+| String
+| No
+| The EKS role to assume.
+
+| `user-alias`
+| String
+| No
+| The user alias.
+
+| `alias`
+| String
+| No
+| The EKS alias.
+
+|===
+
+== Usage examples
+
+=== Current credentials role
+
+Authenticate to {EKS} with the current credentials role.
+
+[source,yaml]
+----
+      - name: Login to Amazon EKS
+        uses: cloudbees-io/configure-eks-credentials@v0
+        with:
+          name: my-eks-cluster-name
+
+      - name: Do some things with the cluster
+        uses: docker://alpine/k8s:latest
+        run: |
+          kubectl apply -k ...
+----
+
+=== Assume a different role
+
+To get correct credentials for {EKS}, you may at times need to assume a role different from your current role.
+
+NOTE: The current {AWS} credentials must be able to assume the role.
+
+[source,yaml]
+----
+      - name: Log in to Amazon EKS
+        uses: cloudbees-io/configure-eks-credentials@v0
+        with:
+          name: my-eks-cluster-name
+          role-to-assume: my-eks-admin-role
+
+      - name: Do some things with the cluster
+        uses: docker://alpine/k8s:latest
+        run: |
+          helm install ...
+----
+
+TIP: To assume a different role, use the `role-session-name` and `role-external-id` options from xref:configure-aws-credentials.adoc[].
+
+=== Connect to multiple clusters
+
+Merge the credentials into `\~/.kube/config` so you can chain multiple times; for example, if you need to have multiple EKS clusters authenticated, or switch between different authentications for the same cluster.
+
+NOTE: The workflow always sets the current context, so the last one takes precedence.
+
+[source,yaml]
+----
+      - name: Log in to Amazon EKS as admin
+        uses: cloudbees-io/configure-eks-credentials@v0
+        with:
+          name: my-eks-cluster-name
+          role-to-assume: my-eks-admin-role
+          user-alias: admin
+          alias: cluster-with-admin
+
+      - name: Log in to Amazon EKS as regular user
+        uses: cloudbees-io/configure-eks-credentials@v0
+        with:
+          name: my-eks-cluster-name
+          user-alias: standard
+          alias: cluster-without-admin
+
+      - name: Do some things with the cluster
+        uses: docker://alpine/k8s:latest
+        run: |
+          helm --kubecontext cluster-with-admin install ...
+          kubectl --context cluster-without-admin get pods ...
+          kubectl --context cluster-with-admin patch ...
+----
+
+== License
+
+This code is made available under the 
+link:https://opensource.org/license/mit/[MIT license].
+
+== References
+
+* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-saas-platform-actions/latest/[using actions in CloudBees workflows].
+* Learn about link:https://docs.cloudbees.com/docs/cloudbees-saas-platform/latest/[the CloudBees platform].

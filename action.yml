@@ -1,0 +1,57 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: 'Configure EKS Credentials For CloudBees Automations'
+description: 'Configure EKS credentials for use with Kubernetes command line tools and libraries'
+inputs:
+  name:
+    description: >-
+      The name of the cluster for which to create a
+      kubeconfig entry. This cluster must exist in your account and in the
+      specified or configured default Region for your AWS CLI installation.
+    required: true
+  role-to-assume:
+    description: >-
+      To assume a role for cluster authentication, 
+      specify an IAM role ARN with this option. For example, if you created a
+      cluster while assuming an IAM role, then you must also assume that role
+      to connect to the cluster the first time.
+  role-session-name:
+    description: >-
+      Session name to pass when assuming the IAM Role via `role-to-assume`.
+      NOTE: Incompatible with `forward-session-name: true`
+      (default if `forward-session-name` is not enabled: CloudBeesAutomations)
+    required: false
+  role-external-id:
+    description: >-
+      External ID to pass when assuming the IAM Role via `role-to-assume`
+    required: false
+  forward-session-name:
+    description: >-
+      Enable mapping a federated sessions caller-specified-role-name attribute onto newly assumed sessions.
+      NOTE: Only applicable when a new role is requested via `role-to-assume`, when `true` then 
+      `role-session-name` cannot be specified
+    default: "false"
+    required: false
+  alias:
+    description: >-
+      Alias for the cluster context name. Defaults to match cluster ARN.
+  user-alias:
+    description: >-
+      Alias for the generated user name. Defaults to match cluster ARN.
+
+runs:
+  using: composite
+  steps:
+    - name: Configure EKS Credentials For CloudBees Automations
+      uses: docker://registry.saas-dev.beescloud.com/staging/configure-eks-credentials:v0.0.1-beta
+      env:
+        INPUT_NAME: ${{ inputs.name }}
+        INPUT_ROLE_TO_ASSUME: ${{ inputs.role-to-assume }}
+        INPUT_ROLE_SESSION_NAME: ${{ inputs.role-session-name }}
+        INPUT_ROLE_EXTERNAL_ID: ${{ inputs.role-external-id }}
+        INPUT_FORWARD_SESSION_NAME: ${{ inputs.forward-session-name }}
+        INPUT_ALIAS: ${{ inputs.alias }}
+        INPUT_USER_ALIAS: ${{ inputs.user-alias }}
+      with:
+        entrypoint: configure-eks-credentials
+        args: ""
