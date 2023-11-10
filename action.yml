@@ -43,7 +43,7 @@ runs:
   using: composite
   steps:
     - name: Configure EKS Credentials For CloudBees Automations
-      uses: docker://registry.saas-dev.beescloud.com/staging/configure-eks-credentials:v0.0.1-alpha
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/configure-eks-credentials:v0.0.1-alpha
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_ROLE_TO_ASSUME: ${{ inputs.role-to-assume }}
