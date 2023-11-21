@@ -83,7 +83,7 @@ NOTE: The current AWS credentials must be able to assume the role.
 [source,yaml]
 ----
       - name: Log in to Amazon EKS
-        uses: cloudbees-io/configure-eks-credentials@v0
+        uses: cloudbees-io/configure-eks-credentials@v1
         with:
           name: my-eks-cluster-name
           role-to-assume: my-eks-admin-role
