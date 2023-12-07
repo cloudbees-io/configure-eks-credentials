@@ -10,16 +10,14 @@ Make sure to add the following to your YAML file:
 [source,yaml]
 ----
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v1
 
       - name: Configure AWS credentials
-        uses: cloudbees-io/configure-aws-credentials@v0
+        uses: cloudbees-io/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
           aws-region: aws-region-1
 ----
-
-For more information, refer to xref:configure-aws-credentials.adoc[].
 
 
 == Inputs
@@ -59,12 +57,12 @@ For more information, refer to xref:configure-aws-credentials.adoc[].
 
 === Current credentials role
 
-Authenticate to {EKS} with the current credentials role.
+Authenticate to EKS with the current credentials role.
 
 [source,yaml]
 ----
-      - name: Login to Amazon EKS
-        uses: cloudbees-io/configure-eks-credentials@v0
+      - name: Log in to Amazon EKS
+        uses: cloudbees-io/configure-eks-credentials@v1
         with:
           name: my-eks-cluster-name
 
@@ -76,14 +74,14 @@ Authenticate to {EKS} with the current credentials role.
 
 === Assume a different role
 
-To get correct credentials for {EKS}, you may at times need to assume a role different from your current role.
+To get correct credentials for EKS, you may at times need to assume a role different from your current role.
 
-NOTE: The current {AWS} credentials must be able to assume the role.
+NOTE: The current AWS credentials must be able to assume the role.
 
 [source,yaml]
 ----
       - name: Log in to Amazon EKS
-        uses: cloudbees-io/configure-eks-credentials@v0
+        uses: cloudbees-io/configure-eks-credentials@v1
         with:
           name: my-eks-cluster-name
           role-to-assume: my-eks-admin-role
@@ -94,7 +92,7 @@ NOTE: The current {AWS} credentials must be able to assume the role.
           helm install ...
 ----
 
-TIP: To assume a different role, use the `role-session-name` and `role-external-id` options from xref:configure-aws-credentials.adoc[].
+TIP: To assume a different role, use the `role-session-name` and `role-external-id` options available in link:https://github.com/cloudbee-io[configure AWS credentials action].
 
 === Connect to multiple clusters
 
@@ -105,7 +103,7 @@ NOTE: The workflow always sets the current context, so the last one takes preced
 [source,yaml]
 ----
       - name: Log in to Amazon EKS as admin
-        uses: cloudbees-io/configure-eks-credentials@v0
+        uses: cloudbees-io/configure-eks-credentials@v1
         with:
           name: my-eks-cluster-name
           role-to-assume: my-eks-admin-role
@@ -113,7 +111,7 @@ NOTE: The workflow always sets the current context, so the last one takes preced
           alias: cluster-with-admin
 
       - name: Log in to Amazon EKS as regular user
-        uses: cloudbees-io/configure-eks-credentials@v0
+        uses: cloudbees-io/configure-eks-credentials@v1
         with:
           name: my-eks-cluster-name
           user-alias: standard
