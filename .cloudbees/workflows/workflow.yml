@@ -8,22 +8,65 @@ on:
     branches:
       - "*"
 
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+
 jobs:
-  compat-check:
-    #name: Check the action running on CBA
+  build:
     steps:
-      - uses: cloudbees-io/checkout@v1
-      - uses: cloudbees-io/configure-aws-credentials@v0
+      - name: Checkout
+        uses: cloudbees-io/checkout@v1
+
+      - name: Validate action
+        uses: docker://amazon/aws-cli:2.12.6
+        run: |
+          TESTING_SHA=$(cat .cloudbees/testing/action.yml | sha1sum)
+          ORIGINAL_SHA=$(sed -e 's|docker://public.ecr.aws/l7o7z1g8/actions/|docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/|g' < action.yml | sha1sum)
+          if [ "${TESTING_SHA}" != "${ORIGINAL_SHA}" ]; then
+            echo "Original action different from testing action"
+            exit 1
+          fi
+
+      - name: Login to AWS
+        uses: cloudbees-io/configure-aws-credentials@v1
+        id: aws-login
         with:
           aws-region: us-east-1
-          aws-access-key-id: ${{ vars.cloudbees_saas_test_access_key_id }}
-          aws-secret-access-key: ${{ secrets.cloudbees_saas_test_secret_access_key }}
-          role-to-assume: service-eks-role
-          role-duration-seconds: "3600" # need to override default of 6h as our role has 1h max
-        ## TODO find some way to enable testing this action against the latest docker image on pull requests
-      - uses: cloudbees-io/configure-eks-credentials@v0
+          role-to-assume: ${{ vars.oidc_staging_iam_role }}
+          role-duration-seconds: "3600" # optionally set the duration of the login token
+
+      - name: Configure container registry for Staging ECR
+        uses: https://github.com/cloudbees-io/configure-ecr-credentials@v1
+
+      - name: Login to Dockerhub using Cloudbees service account
+        uses: https://github.com/cloudbees-io/configure-oci-credentials@v1
         with:
-          name: saas-test
+          registry: docker.io
+          username: ${{ secrets.e5bbc3_dockerhub_user }}
+          password: ${{ secrets.e5bbc3_dockerhub_password }}
+    
+      - name: Build and publish
+        uses: cloudbees-io/kaniko
+        with:
+          destination: 020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/configure-eks-credentials:${{ cloudbees.scm.sha }}
+          labels: maintainer=sdp-pod-3,email=engineering@cloudbees.io
+
+  compat-check:
+    needs: ["build"]
+    steps:
+      - uses: cloudbees-io/checkout@v1
+      - name: Login to AWS
+        uses: cloudbees-io/configure-aws-credentials@v1
+        id: aws-login
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ vars.oidc_staging_iam_role }}
+          role-duration-seconds: "3600" # optionally set the duration of the login token
+      - uses: ./.cloudbees/testing
+        with:
+          name: ${{ vars.tekton_east_cluster_name }}
           alias: mycontext
       - uses: docker://alpine/k8s:1.27.3
         run: |
