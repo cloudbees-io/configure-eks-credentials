@@ -2,7 +2,7 @@ FROM alpine:3.18 as certs
 
 RUN apk add -U --no-cache ca-certificates
 
-FROM golang:1.20.5-alpine3.18 AS build
+FROM golang:1.22.1-alpine3.19 AS build
 
 WORKDIR /work
 
