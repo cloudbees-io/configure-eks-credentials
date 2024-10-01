@@ -1,8 +1,8 @@
-FROM alpine:3.19.1 as certs
+FROM alpine:3.20.3 as certs
 
 RUN apk add -U --no-cache ca-certificates
 
-FROM golang:1.22.1-alpine3.19 AS build
+FROM golang:1.23.1-alpine3.20 AS build
 
 WORKDIR /work
 
@@ -14,7 +14,7 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /build-out/ .
 
-FROM public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator:v0.6.20-eks-1-30-latest as awsiamauth
+FROM public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator:v0.6.26-eks-1-31-latest AS awsiamauth
 
 FROM scratch
 
