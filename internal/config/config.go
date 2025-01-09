@@ -25,6 +25,8 @@ import (
 type Config struct {
 	// Name The name of the cluster for which to create a kubeconfig entry
 	Name string
+	// Region Override the default region and connect to a cluster in a different region
+	Region string
 	// RoleToAssume To assume a role for cluster authentication, specify an IAM role ARN with this option
 	RoleToAssume string `mapstructure:"role-to-assume"`
 	// RoleSessionName Session name to pass when assuming the IAM Role
@@ -73,6 +75,12 @@ func (c *Config) Authenticate(ctx context.Context) error {
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return fmt.Errorf("could not load AWS credentials, have you run configure-aws-credentials first? %v", err)
+	}
+
+	if c.Region != "" {
+		core.Debug("Overriding current region %s with %s", cfg.Region, c.Region)
+		
+		cfg.Region = c.Region
 	}
 
 	core.Debug("Describing cluster %s", c.Name)

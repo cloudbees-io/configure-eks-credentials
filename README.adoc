@@ -125,6 +125,28 @@ NOTE: The workflow always sets the current context, so the last one takes preced
           kubectl --context cluster-with-admin patch ...
 ----
 
+=== Connect to a cluster in a different region
+
+When you authenticate to AWS you specify the region to connect to.
+By default, the cluster to connect to must be in the same region, however if you specify the region you can connect to a cluster in a different region without updating the AWS configured region.
+
+NOTE: this can be combined with the above merging of credentials into `\~/.kube/config` to simplify applying operations across multiple regions.
+
+[source,yaml]
+----
+      - name: Configure AWS credentials
+        uses: cloudbees-io/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/my-cloudbees-actions-role
+          aws-region: aws-region-1
+
+      - name: Log in to Amazon EKS cluster in a different region
+        uses: cloudbees-io/configure-eks-credentials@v1
+        with:
+          name: my-eks-cluster-name
+          region: aws-region-2
+----
+
 == License
 
 This code is made available under the 
