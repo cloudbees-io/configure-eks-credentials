@@ -69,3 +69,28 @@ jobs:
         run: |
           helm ls
           helm --kube-context mycontext ls
+
+  region-check:
+    needs: ["build"]
+    steps:
+      - uses: cloudbees-io/checkout@v1
+      - name: Login to AWS
+        uses: cloudbees-io/configure-aws-credentials@v1
+        id: aws-login
+        with:
+          aws-region: us-west-2
+          role-to-assume: ${{ vars.oidc_staging_iam_role }}
+          role-duration-seconds: "3600" # optionally set the duration of the login token
+      - uses: ./.cloudbees/testing
+        with:
+          name: ${{ vars.tekton_east_cluster_name }}
+          alias: mycontext
+          region: us-east-1
+      - uses: docker://alpine/k8s:1.27.3
+        run: |
+          kubectl get pods
+          kubectl --context mycontext get pods
+      - uses: docker://alpine/helm:3.11.1
+        run: |
+          helm ls
+          helm --kube-context mycontext ls
