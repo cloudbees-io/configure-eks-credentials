@@ -9,7 +9,8 @@ inputs:
       kubeconfig entry. This cluster must exist in your account and in the
       specified or configured default Region for your AWS CLI installation.
     required: true
-  region: >-
+  region:
+    description: >-
       The AWS region hosting the cluster to connect to.
       Leave blank to connect to a cluster in the current default region.
   role-to-assume:
