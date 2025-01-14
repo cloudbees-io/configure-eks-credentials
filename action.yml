@@ -9,6 +9,10 @@ inputs:
       kubeconfig entry. This cluster must exist in your account and in the
       specified or configured default Region for your AWS CLI installation.
     required: true
+  region:
+    description: >-
+      The AWS region hosting the cluster to connect to.
+      Leave blank to connect to a cluster in the current default region.
   role-to-assume:
     description: >-
       To assume a role for cluster authentication, 
@@ -46,6 +50,7 @@ runs:
       uses: docker://public.ecr.aws/l7o7z1g8/actions/configure-eks-credentials:${{ action.scm.sha }}
       env:
         INPUT_NAME: ${{ inputs.name }}
+        INPUT_REGION: ${{ inputs.region }}
         INPUT_ROLE_TO_ASSUME: ${{ inputs.role-to-assume }}
         INPUT_ROLE_SESSION_NAME: ${{ inputs.role-session-name }}
         INPUT_ROLE_EXTERNAL_ID: ${{ inputs.role-external-id }}

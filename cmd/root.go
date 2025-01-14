@@ -36,6 +36,8 @@ func init() {
 
 	inputString("name", "", "The name of the cluster for which to create a kubeconfig entry")
 
+	inputString("region", "", "Override the default AWS region and connect to a cluster in a different region")
+
 	inputString("role-to-assume", "", "To assume a role for cluster authentication, specify an IAM role ARN with this option")
 
 	inputString("role-session-name", "", "Session name to pass when assuming the IAM Role via `role-to-assume`")
