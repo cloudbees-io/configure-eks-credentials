@@ -1,6 +1,6 @@
 = CloudBees action: Configure EKS credentials
 
-Use this action to configure {EKS} (EKS) credentials for use in CloudBees workflows.
+Use this action to configure Amazon Elastic Kubernetes Service (EKS) credentials for use in CloudBees workflows.
 This action updates your `\~/.kube/config` with credentials for connecting to an EKS cluster.
 
 == Prerequisites
