@@ -59,7 +59,7 @@ jobs:
           role-duration-seconds: "3600" # optionally set the duration of the login token
       - uses: ./.cloudbees/testing
         with:
-          name: ${{ vars.tekton_east_cluster_name }}
+          name: ${{ vars.tekton_east_cluster_name }}-blue
           alias: mycontext
       - uses: docker://alpine/k8s:1.27.3
         run: |
@@ -83,7 +83,7 @@ jobs:
           role-duration-seconds: "3600" # optionally set the duration of the login token
       - uses: ./.cloudbees/testing
         with:
-          name: ${{ vars.tekton_east_cluster_name }}
+          name: ${{ vars.tekton_east_cluster_name }}-blue
           alias: mycontext
           region: us-east-1
       - uses: docker://alpine/k8s:1.27.3
