@@ -14,7 +14,10 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /build-out/ .
 
-FROM public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator:v0.6.26-eks-1-31-latest AS awsiamauth
+FROM alpine:3.21 AS awsiamauth
+
+RUN wget https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.6.30/aws-iam-authenticator_0.6.30_linux_amd64 -O aws-iam-authenticator && \
+    chmod +x aws-iam-authenticator
 
 FROM scratch
 
