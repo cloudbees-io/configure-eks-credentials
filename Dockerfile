@@ -14,7 +14,7 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /build-out/ .
 
-FROM public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator:v0.6.26-eks-1-31-latest AS awsiamauth
+FROM public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator:v0.7.2-eks-1-32-latest AS awsiamauth
 
 FROM scratch
 
