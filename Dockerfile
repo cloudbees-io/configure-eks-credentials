@@ -2,7 +2,7 @@ FROM alpine:3.22 AS certs
 
 RUN apk add -U --no-cache ca-certificates
 
-FROM golang:1.25.4-alpine3.22 AS build
+FROM golang:1.26.0 AS build
 
 WORKDIR /work
 
@@ -14,11 +14,12 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /build-out/ .
 
-FROM public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator:v0.7.2-eks-1-32-latest AS awsiamauth
+RUN CGO_ENABLED=0 GOOS=linux go install sigs.k8s.io/aws-iam-authenticator/cmd/aws-iam-authenticator@v0.7.2 \
+ && mv "$(go env GOPATH)"/bin/aws-iam-authenticator /aws-iam-authenticator
 
 FROM scratch
 
-COPY --from=awsiamauth /aws-iam-authenticator /usr/bin/
+COPY --from=build /aws-iam-authenticator /usr/bin/
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
