@@ -14,13 +14,13 @@ COPY . .
 
 ENV GOFLAGS=-buildvcs=false
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w -extldflags "-static" -buildvcs=false' -o /build-out/ .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /build-out/ .
 
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates \
  && rm -rf /var/lib/apt/lists/* \
  && git clone --depth 1 https://github.com/kubernetes-sigs/aws-iam-authenticator.git /aws-iam-authenticator-src \
  && cd /aws-iam-authenticator-src/cmd/aws-iam-authenticator \
- && CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w -extldflags "-static" -buildvcs=false' -o /aws-iam-authenticator
+ && CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /aws-iam-authenticator
 
 FROM scratch
 
