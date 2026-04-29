@@ -1,9 +1,9 @@
-ARG AWS_IAM_AUTHENTICATOR_VERSION=0.7.11
+ARG AWS_IAM_AUTHENTICATOR_VERSION=0.7.14
 
 FROM alpine:3.23 AS certs
 RUN apk add -U --no-cache ca-certificates
 
-FROM golang:1.26.0-alpine3.23 AS build
+FROM golang:1.26.2-alpine3.23 AS build
 WORKDIR /work
 COPY go.mod* go.sum* ./
 RUN go mod download
