@@ -1,6 +1,6 @@
 module github.com/cloudbees-io/configure-eks-credentials
 
-go 1.26.0
+go 1.26.2
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.29.17
