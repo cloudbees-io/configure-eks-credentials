@@ -71,6 +71,7 @@ jobs:
       - uses: ./.cloudbees/testing
         with:
           name: ${{ vars.tekton_east_cluster_name }}-blue
+          role-to-assume: ${{ vars.oidc_staging_iam_role }}
           alias: mycontext
       - uses: docker://alpine/k8s:1.27.3
         run: |
@@ -95,6 +96,7 @@ jobs:
       - uses: ./.cloudbees/testing
         with:
           name: ${{ vars.tekton_east_cluster_name }}-blue
+          role-to-assume: ${{ vars.oidc_staging_iam_role }}
           alias: mycontext
           region: us-east-1
       - uses: docker://alpine/k8s:1.27.3
