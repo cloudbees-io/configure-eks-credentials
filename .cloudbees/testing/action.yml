@@ -47,7 +47,7 @@ runs:
   using: composite
   steps:
     - name: Configure EKS Credentials For CloudBees Automations
-      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/configure-eks-credentials:${{ action.scm.sha }}
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/configure-eks-credentials:${{ file.scm.sha }}
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_REGION: ${{ inputs.region }}
