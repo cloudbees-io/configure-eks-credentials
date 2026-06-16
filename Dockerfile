@@ -1,4 +1,4 @@
-ARG AWS_IAM_AUTHENTICATOR_VERSION=0.7.14
+ARG AWS_IAM_AUTHENTICATOR_VERSION=0.7.18
 
 FROM alpine:3.23 AS certs
 RUN apk add -U --no-cache ca-certificates
