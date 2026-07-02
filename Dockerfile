@@ -1,9 +1,9 @@
-ARG AWS_IAM_AUTHENTICATOR_VERSION=0.7.14
+ARG AWS_IAM_AUTHENTICATOR_VERSION=0.7.18
 
-FROM alpine:3.23 AS certs
+FROM alpine:3.24 AS certs
 RUN apk add -U --no-cache ca-certificates
 
-FROM alpine:3.23 AS awsiamauth
+FROM alpine:3.24 AS awsiamauth
 ARG AWS_IAM_AUTHENTICATOR_VERSION
 WORKDIR /
 RUN wget -q https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v${AWS_IAM_AUTHENTICATOR_VERSION}/aws-iam-authenticator_${AWS_IAM_AUTHENTICATOR_VERSION}_linux_amd64 -O aws-iam-authenticator && \

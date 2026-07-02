@@ -18,10 +18,10 @@ jobs:
   build:
     steps:
       - name: Checkout
-        uses: cloudbees-io/checkout@v1
+        uses: cloudbees-io/checkout@v2
 
       - name: Validate action
-        uses: docker://amazon/aws-cli:2.27.38
+        uses: docker://amazon/aws-cli:2.35.13
         run: |
           TESTING_SHA=$(cat .cloudbees/testing/action.yml | sha1sum)
           ORIGINAL_SHA=$(sed -e 's|docker://public.ecr.aws/l7o7z1g8/actions/|docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/|g' < action.yml | sha1sum)
@@ -46,7 +46,7 @@ jobs:
   compat-check:
     needs: ["build"]
     steps:
-      - uses: cloudbees-io/checkout@v1
+      - uses: cloudbees-io/checkout@v2
       - name: Login to AWS
         uses: cloudbees-io/configure-aws-credentials@v1
         id: aws-login
@@ -70,7 +70,7 @@ jobs:
   region-check:
     needs: ["build"]
     steps:
-      - uses: cloudbees-io/checkout@v1
+      - uses: cloudbees-io/checkout@v2
       - name: Login to AWS
         uses: cloudbees-io/configure-aws-credentials@v1
         id: aws-login
