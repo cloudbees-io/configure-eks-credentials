@@ -4,7 +4,7 @@ go 1.26.2
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.33.9
-	github.com/aws/aws-sdk-go-v2/service/eks v1.88.1
+	github.com/aws/aws-sdk-go-v2/service/eks v1.104.2
 	github.com/aws/aws-sdk-go-v2/service/sts v1.51.4
 	github.com/google/uuid v1.6.0
 	github.com/spf13/cobra v1.10.2
